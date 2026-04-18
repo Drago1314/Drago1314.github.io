@@ -154,14 +154,15 @@ img {
     position: absolute;
     border-radius: 50%;
     background: var(--accent-primary);
-    opacity: 0.15;
+    opacity: 0.5;
     animation: floatParticle linear infinite;
+    box-shadow: 0 0 10px currentColor; /* Added subtle glow */
 }
 
 @keyframes floatParticle {
     0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.15; }
-    90% { opacity: 0.15; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
     100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
 }
 
