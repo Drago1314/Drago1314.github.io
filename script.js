@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSkillBars();
     initCounters();
     initContactForm();
+    initScrollTop();
     initSmoothScroll();
     initTheme();
     initVanillaTilt();
@@ -252,36 +253,58 @@ function initCounters() {
 }
 
 // ===============================
-// Contact Form
+// Contact Form - Web3Forms AJAX
 // ===============================
 function initContactForm() {
     const form = document.getElementById('contactForm');
-    if (!form) return;
+    const result = document.getElementById('form-result');
+    if (!form || !result) return;
 
-    form.addEventListener('submit', (e) => {
-        // e.preventDefault(); // Removed to allow mailto action
-
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
         const originalContent = submitBtn.innerHTML;
 
-        // Show sending state
-        submitBtn.innerHTML = '<span>Opening Mail Client...</span>';
+        submitBtn.innerHTML = '<span>Sending...</span>';
         submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.7';
 
-        // Simulate form submission
-        setTimeout(() => {
-            submitBtn.innerHTML = '<span>Sent! ✓</span>';
-            submitBtn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
+        const formData = new FormData(form);
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
 
-            setTimeout(() => {
+        fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status == 200) {
+                    result.innerHTML = "Message Sent Successfully!";
+                    result.className = "form-result success";
+                    form.reset();
+                } else {
+                    console.log(response);
+                    result.innerHTML = json.message;
+                    result.className = "form-result error";
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                result.innerHTML = "Something went wrong!";
+                result.className = "form-result error";
+            })
+            .then(function() {
                 submitBtn.innerHTML = originalContent;
                 submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.style.background = '';
-                form.reset();
-            }, 2500);
-        }, 1500);
+                result.style.display = "block";
+                setTimeout(() => {
+                    result.style.display = "none";
+                }, 5000);
+            });
     });
 }
 
@@ -299,6 +322,29 @@ function initSmoothScroll() {
                     block: 'start'
                 });
             }
+        });
+    });
+}
+
+// ===============================
+// Scroll Top Functionality
+// ===============================
+function initScrollTop() {
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (!scrollTopBtn) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 500) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
         });
     });
 }
