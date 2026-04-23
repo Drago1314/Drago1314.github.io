@@ -166,10 +166,10 @@ img {
 }
 
 @keyframes floatParticle {
-    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    0% { transform: rotate(0deg); opacity: 0; }
     10% { opacity: 0.3; }
     90% { opacity: 0.3; }
-    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    100% { transform: rotate(720deg); opacity: 0; }
 }
 
 /* Cursor Glow */

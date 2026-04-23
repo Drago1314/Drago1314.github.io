@@ -19,26 +19,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===============================
-// Background Particles
+// Background Particles with Parallax
 // ===============================
 function initParticles() {
     const container = document.getElementById('bgParticles');
     if (!container) return;
     const count = 30;
+    const particles = [];
 
     for (let i = 0; i < count; i++) {
         const particle = document.createElement('div');
         particle.classList.add('particle');
         const size = Math.random() * 6 + 3;
+        const speedFactor = Math.random() * 0.5 + 0.2; // Speed multiplier for parallax
+        
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`; // Random start position
         particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
         particle.style.animationDelay = `${Math.random() * 15}s`;
+        
         const colors = ['#7c3aed', '#a855f7', '#06b6d4', '#ec4899'];
         particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
         container.appendChild(particle);
+        particles.push({ element: particle, speed: speedFactor });
     }
+
+    // Parallax Scroll Effect
+    window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        particles.forEach(p => {
+            p.element.style.transform = `translateY(${scrolled * p.speed}px)`;
+        });
+    });
 }
 
 // ===============================
